@@ -8,9 +8,9 @@
   <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
                 crossorigin="anonymous"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-  <script src="./drawing_utilities.js" crossorigin="anonymous"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-  <script src="./script.js" type="module"></script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     .input_video {
@@ -51,10 +51,12 @@
 
 <body>
   <div class="container">
-    <p id="fps"> FPS: </p>
+    <p id="fps"> FPS: Test Hot Reload</p>
     <video playsinline class="input_video"></video>
     <canvas class="output_canvas"></canvas>
   </div>
+  <script src="./drawing_utilities.js" type="application/javascript"></script>
+  <script src="./script.js" type="application/javascript"></script>
 </body>
 
 </html>
