@@ -104,8 +104,7 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
                   child:
                   Center(child:InAppWebView(
                     key: webViewKey,
-                    initialUrlRequest:
-                    URLRequest(url: Uri.parse("https://tps-webview-demo.web.app/")),
+                    initialFile:'assets/Pose_Est_Demo/index.html',
                     initialOptions: options,
                     pullToRefreshController: pullToRefreshController,
                     onWebViewCreated: (controller) {
