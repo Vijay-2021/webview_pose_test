@@ -17,10 +17,10 @@ function onResults(results) {
         FPSElement.innerHTML = "FPS: " + FPS + " Average FPS: " + avgFPS; updateFPS = false;
     }
     lastTime = currentTime;
-    if (!results.poseLandmarks){return;}
     //canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+    if(!results.poseLandmarks){return;}//if there are no pose landmarks don't draw them
     drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,{ color: '#00FF00', lineWidth: 2.0 });
     drawLandmarks(canvasCtx, results.poseLandmarks,{ color: '#FF0000', lineWidth: 1.0 });
     //canvasCtx.restore();
