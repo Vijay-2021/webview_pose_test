@@ -37,8 +37,14 @@ pose.setOptions({
     minTrackingConfidence: 0.5
 });
 pose.onResults(onResults);
+var sentResizedMessage = false;
 const camera = new Camera(videoElement, {
-    onFrame: async () => {  
+    onFrame: async () => {
         await pose.send({ image: videoElement });
+        if(!sentResizedMessage){
+            console.log("Message: resize video");
+            sentResizedMessage = true;
+        }
     }
-});camera.start();
+});
+camera.start();

@@ -16,14 +16,10 @@
     .input_video {
       display: none
     }
-
-
     .output_canvas {
       width: 1280px;
       height: 720px;
     }
-
-
     /* Extra small devices (phones, 600px and down) */
     @media only screen and (max-width: 650px) and (orientation: landscape) {
       .input_video {
@@ -51,7 +47,7 @@
 
 <body>
   <div class="container" style="text-align:center;">
-    <p id="fps"> FPS: Test Hot Reload</p>
+    <p id="fps"> FPS: Average FPS:</p>
     <video playsinline autoplay class="input_video"></video>
     <canvas class="output_canvas"></canvas>
   </div>
