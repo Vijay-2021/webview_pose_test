@@ -5,7 +5,6 @@
      SPDX-License-Identifier: Apache-2.0
     */
     'use strict';
-
     function h(a) {
         var c = 0;
         return function () {
@@ -22,7 +21,6 @@
         a[c] = b.value;
         return a
     };
-
     function m(a) {
         a = ["object" == typeof globalThis && globalThis, a, "object" == typeof window && window, "object" == typeof self && self, "object" == typeof global && global];
         for (var c = 0; c < a.length; ++c) {
@@ -32,7 +30,6 @@
         throw Error("Cannot find global object");
     }
     var n = m(this);
-
     function p(a, c) {
         if (c) a: {
             var b = n; a = a.split(".");
@@ -48,7 +45,6 @@
             })
         }
     }
-
     function q(a) {
         var c = "undefined" != typeof Symbol && Symbol.iterator && a[Symbol.iterator];
         return c ? c.call(a) : {
@@ -91,7 +87,6 @@
     p("Float32Array.prototype.fill", t);
     p("Float64Array.prototype.fill", t);
     var u = this || self;
-
     function v(a, c) {
         a = a.split(".");
         var b = u;
@@ -104,18 +99,15 @@
         radius: 3.5,
         visibilityMin: .5
     };
-
     function x(a) {
         a = a || {};
         return Object.assign(Object.assign(Object.assign({}, w), {
             fillColor: a.color
         }), a)
     }
-
     function y(a, c) {
         return a instanceof Function ? a(c) : a
     }
-
     function z(a, c, b) {
         return Math.max(Math.min(c, b), Math.min(Math.max(c, b), a))
     }
