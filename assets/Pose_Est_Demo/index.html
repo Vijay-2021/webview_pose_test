@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
                 crossorigin="anonymous"></script> -->
@@ -43,6 +44,7 @@
       }
     }
   </style>
+
 </head>
 
 <body>
@@ -50,6 +52,8 @@
     <p id="fps"> FPS: Average FPS:</p>
     <video playsinline autoplay class="input_video"></video>
     <canvas class="output_canvas"></canvas>
+    <button id="startEst">Start Pose Est.</button>
+    <button id="stopEst">Stop Pose Est.</button>
   </div>
   <script src="./drawing_utilities.js" crossorigin="anonymous"></script>
   <script src="./script.js" crossorigin="anonymous"></script>

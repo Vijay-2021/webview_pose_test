@@ -78,7 +78,7 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
                           setState(() {
                             value = !value;
                           });
-                          var url = Uri.parse("https://appr.tc/");
+                          var url = Uri.parse("https://vijay-2021.github.io/tfjsTest.html");
                           webViewController?.loadUrl(urlRequest: URLRequest(url: url));
                         }
                     ) : TextButton(
@@ -102,7 +102,7 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
                   child:
                   Center(child:InAppWebView(
                     key: webViewKey,
-                    initialFile:'assets/Pose_Est_Demo/index.html',
+                    initialUrlRequest: URLRequest(url:Uri.parse("https://vijay-2021.github.io/combined.html")),
                     initialOptions: options,
                     pullToRefreshController: pullToRefreshController,
                     onWebViewCreated: (controller) {

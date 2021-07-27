@@ -6,6 +6,7 @@ var FPS, avgFPS, currentTime,lastTime =0;
 var updateFPS = false;
 var timesOnResultsRan = 0; 
 var FPSTotal =0;
+var videoState = false;//false = webcam not playing, true = webcam playing
 const intervalId = window.setInterval(function(){updateFPS = true;}, 1000);
 function onResults(results) {
     currentTime = performance.now();
@@ -47,4 +48,23 @@ const camera = new Camera(videoElement, {
         }
     }
 });
-camera.start();
+//camera.start()
+$('#startEst').click(function(){
+    //if this is pressed too much accidentally, it lags the app, so only let the camera be started if it is not playing
+    if(!videoState){
+        camera.start();
+        videoState=true;
+    }
+});
+$('#stopEst').click(function(){
+    if(videoState){
+        const stream = videoElement.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(function(track) {
+            track.stop();
+        });
+        videoElement.srcObject = null;
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        videoState = false;
+    }
+});
