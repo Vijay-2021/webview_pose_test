@@ -28,7 +28,7 @@ function onResults(results) {
 }
 const pose = new Pose({
     locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.2/${file}`;
     }
 });
 pose.setOptions({

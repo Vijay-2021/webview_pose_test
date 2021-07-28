@@ -3,60 +3,284 @@
 
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-                crossorigin="anonymous"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.2/pose.js" crossorigin="anonymous"></script>
   <style>
-    .input_video {
-      display: none
-    }
-    .output_canvas {
-      width: 1280px;
-      height: 720px;
-    }
-    /* Extra small devices (phones, 600px and down) */
-    @media only screen and (max-width: 650px) and (orientation: landscape) {
-      .input_video {
-        display: none
-      }
-
-      .output_canvas {
-        width: 90vw;
-        height: 90vh;
-      }
+    #container {
+      width: fit-content;
+      height: fit-content;
+      float: left;
     }
 
-    @media only screen and (max-width: 400px) and (orientation: portrait) {
-      .input_video {
-        display: none
-      }
+    #side {
+      width: fit-content;
+      height: fit-content;
+      float: right;
+      align-items: center;
+    }
 
-      .output_canvas {
-        width: 90vw;
-        height: 90vh;
-      }
+    .button {
+      background-color: #008CBA;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-bottom: 0.7rem;
+      display: block;
+    }
+
+    button:hover {
+      opacity: 0.5;
+    }
+
+    .camAndCanvas {
+      z-index: 9;
+      position: absolute;
+      left: 0px;
+      right: 0px;
     }
   </style>
-
 </head>
 
 <body>
-  <div class="container" style="text-align:center;">
-    <p id="fps"> FPS: Average FPS:</p>
-    <video playsinline autoplay class="input_video"></video>
-    <canvas class="output_canvas"></canvas>
-    <button id="startEst">Start Pose Est.</button>
-    <button id="stopEst">Stop Pose Est.</button>
-  </div>
-  <script src="./drawing_utilities.js" crossorigin="anonymous"></script>
-  <script src="./script.js" crossorigin="anonymous"></script>
+<!-- Document Starts -->
+<script type="module">
+    const videoElement = document.getElementById('input_video'); //camera frame
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d'); //used to draw to the canvas
+
+    // Set Flags For Buttons
+    let isAllJointsPressed = false;
+    let isKneeFlexionPressed = false;
+    let isLumbarFlexionPressed = false;
+    let isSitStandPressed = false;
+
+    // Get XY Coords For Joints
+    const JointCoordinatesXY = {
+      leftshoulderx: null,
+      leftshouldery: null,
+      lefthipx: null,
+      lefthipy: null,
+      leftkneex: null,
+      leftkneey: null,
+      leftanklex: null,
+      leftankley: null
+    }
+
+    document.getElementById("alljointsbtn").addEventListener("click", function (event) {
+      isAllJointsPressed = true;
+      isKneeFlexionPressed = false;
+      isLumbarFlexionPressed = false;
+      isSitStandPressed = false;
+      console.log("tron pressed");
+    });
+
+    document.getElementById("kneeflexionbtn").addEventListener("click", function (event) {
+      isAllJointsPressed = false;
+      isKneeFlexionPressed = true;
+      isLumbarFlexionPressed = false;
+      isSitStandPressed = false;
+      console.log("knee pressed");
+    });
+
+    document.getElementById("lumbarflexionbtn").addEventListener("click", function (event) {
+      isAllJointsPressed = false;
+      isKneeFlexionPressed = false;
+      isLumbarFlexionPressed = true;
+      isSitStandPressed = false;
+      console.log("lumbar pressed");
+    });
+
+    document.getElementById("sitstandbtn").addEventListener("click", function (event) {
+      isAllJointsPressed = false;
+      isKneeFlexionPressed = false;
+      isLumbarFlexionPressed = false;
+      isSitStandPressed = true;
+      console.log("sit and stand pressed test 3");
+    });
+
+    function onResults(results) {
+      if (!isAllJointsPressed && !isKneeFlexionPressed && !isLumbarFlexionPressed && !isSitStandPressed) {
+        //if no buttons pressed do nothing
+      } else {
+
+
+        let filteredResults = [];
+
+        if (isAllJointsPressed) {
+          results['poseLandmarks'] = results['poseLandmarks'];
+        }
+
+        if (isKneeFlexionPressed) {
+          filteredResults = [results["poseLandmarks"][23], results["poseLandmarks"][25], results["poseLandmarks"][27]];
+
+          JointCoordinatesXY['lefthipx'] = results["poseLandmarks"][23]['x'];
+          JointCoordinatesXY['lefthipy'] = results["poseLandmarks"][23]['y']
+
+          JointCoordinatesXY['leftkneex'] = results["poseLandmarks"][25]['x']
+          JointCoordinatesXY['leftkneey'] = results["poseLandmarks"][25]['y']
+
+          JointCoordinatesXY['leftanklex'] = results["poseLandmarks"][27]['x']
+          JointCoordinatesXY['leftankley'] = results["poseLandmarks"][27]['y']
+
+          results['poseLandmarks'] = filteredResults;//why do this?
+        }
+
+        if (isLumbarFlexionPressed) {
+          filteredResults = [results.poseLandmarks[11], results.poseLandmarks[23], results.poseLandmarks[27]];
+
+          JointCoordinatesXY['leftshoulderx'] = results["poseLandmarks"][11]['x'];
+          JointCoordinatesXY['leftshouldery'] = results["poseLandmarks"][11]['y']
+
+          JointCoordinatesXY['lefthipx'] = results["poseLandmarks"][23]['x']
+          JointCoordinatesXY['lefthipy'] = results["poseLandmarks"][23]['y']
+
+          JointCoordinatesXY['leftanklex'] = results["poseLandmarks"][27]['x']
+          JointCoordinatesXY['leftankley'] = results["poseLandmarks"][27]['y']
+
+          results['poseLandmarks'] = filteredResults;
+        }
+
+        if (isSitStandPressed) {
+          let filteredResults = [
+            results["poseLandmarks"][11], results["poseLandmarks"][23], results["poseLandmarks"][25], results["poseLandmarks"][27]
+          ];
+
+          JointCoordinatesXY['leftshoulderx'] = results["poseLandmarks"][11]['x'];
+          JointCoordinatesXY['leftshouldery'] = results["poseLandmarks"][11]['y'];
+
+          JointCoordinatesXY['lefthipx'] = results["poseLandmarks"][23]['x'];
+          JointCoordinatesXY['lefthipy'] = results["poseLandmarks"][23]['y'];
+
+          JointCoordinatesXY['leftkneex'] = results["poseLandmarks"][25]['x'];
+          JointCoordinatesXY['leftkneey'] = results["poseLandmarks"][25]['y'];
+
+          JointCoordinatesXY['leftanklex'] = results["poseLandmarks"][27]['x'];
+          JointCoordinatesXY['leftankley'] = results["poseLandmarks"][27]['y'];
+
+          results['poseLandmarks'] = filteredResults;
+        }
+
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(
+          results.image, 0, 0, canvasElement.width, canvasElement.height);
+        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
+          { color: '#00FF00', lineWidth: 4 }); //
+        drawLandmarks(canvasCtx, results.poseLandmarks,
+          { color: '#FF0000', lineWidth: 2 }); // so this is the mediapipe function?
+
+        if (isAllJointsPressed == false) {
+          calculateAngles(canvasCtx);
+        }
+        canvasCtx.restore();
+      }
+    }
+
+    function calculateAngles(ctx) {
+
+      let ax, ay, bx, by, cx, cy, cz = null;
+
+      if (isKneeFlexionPressed) {
+        ax = JointCoordinatesXY['leftanklex'];
+        ay = JointCoordinatesXY['leftankley'];
+
+        bx = JointCoordinatesXY['leftkneex'];
+        by = JointCoordinatesXY['leftkneey'];
+
+        cz = Math.sqrt(Math.pow(JointCoordinatesXY['lefthipy'] - JointCoordinatesXY['leftkneey'], 2));
+
+        cx = bx + Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
+        cy = by;
+      }
+
+      if (isLumbarFlexionPressed) {
+        ax = JointCoordinatesXY['leftshoulderx'];
+        ay = JointCoordinatesXY['leftshouldery'];
+
+        bx = JointCoordinatesXY['lefthipx'];
+        by = JointCoordinatesXY['lefthipy'];
+
+        cx = JointCoordinatesXY['leftanklex'];
+        cy = JointCoordinatesXY['leftankley'];
+      }
+
+      if (isSitStandPressed) {
+        ax = JointCoordinatesXY['leftshoulderx'];
+        ay = JointCoordinatesXY['leftshouldery'];
+
+        bx = JointCoordinatesXY['lefthipx'];
+        by = JointCoordinatesXY['lefthipy'];
+
+        cx = JointCoordinatesXY['leftkneex'];
+        cy = JointCoordinatesXY['leftkneey'];
+      }
+
+      let a = Math.sqrt(Math.pow(ax - bx, 2) + Math.pow(ay - by, 2));
+      let b = Math.sqrt(Math.pow(bx - cx, 2) + Math.pow(by - cy, 2));
+      let c = Math.sqrt(Math.pow(cx - ax, 2) + Math.pow(cy - ay, 2));
+
+      let resultDegree =
+        (Math.acos(
+          (Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b)
+        ) *
+          180) /
+        Math.PI;
+
+      resultDegree = 180 - resultDegree;
+
+      ctx.font = "60px Arial";
+      ctx.textAlign = "center";
+      ctx.fontWeight = "lighter";
+      ctx.fillStyle = "#06f618";
+
+      if (isSitStandPressed) {
+        if (Math.floor(resultDegree) < 10) {
+          ctx.fillText("Standing Up", 1000, 50);
+        } else {
+          ctx.fillText("Sitting Down", 1000, 50);
+        }
+      }
+      ctx.fillText(Math.floor(resultDegree).toString() + "°", 50, 50);
+      ctx.stroke();
+    }
+    const pose = new Pose({locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.2/${file}`;
+    }});
+    pose.setOptions({
+      upperBodyOnly: false,
+      smoothLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+    pose.onResults(onResults);
+
+    const camera = new Camera(videoElement, {
+      onFrame: async () => {
+        await pose.send({ image: videoElement });
+      },
+      width: 1280,
+      height: 720
+    });
+    camera.start();
+  </script>
+
+<!-- Document Starts -->
+<div id="container">
+  <video class="camAndCanvas" id="input_video" width="380px" height="640px"></video>
+  <canvas class="camAndCanvas" id="output_canvas" width="380px" height="640px"></canvas>
+</div>
+<div id="side">
+  <button id="alljointsbtn" class="button">TRON Mode</button>
+  <button id="kneeflexionbtn" class="button">Knee Flexion</button>
+  <button id="lumbarflexionbtn" class="button">Lumbar Flexion</button>
+  <button id="sitstandbtn" class="button">Sit & Stand</button>
+</div>
 </body>
 
 </html>
