@@ -73,12 +73,12 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
               children: <Widget>[
                 value
                     ? TextButton(
-                        child: Text("Go to IOS Camera Test"),
+                        child: Text("Go to Test Page"),
                         onPressed:() async{
                           setState(() {
                             value = !value;
                           });
-                          var url = Uri.parse("https://vijay-2021.github.io/combined.html");
+                          var url = Uri.parse("https://vijay-2021.github.io/staticPoseSandbox.html");
                           webViewController?.loadUrl(urlRequest: URLRequest(url: url));
                         }
                     ) : TextButton(
@@ -91,18 +91,24 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
                           webViewController?.loadUrl(urlRequest: URLRequest(url: url));
                         }
                 ),
-                if(value)
+
                   TextButton(
                     child: Text("Resize Window"),
                     onPressed: (){
-                      resizeWebViewVideo(context,webViewKey);
+                      //resizeWebViewVideo(context,webViewKey);
+                      webViewController?.evaluateJavascript(source: """
+                        window.dispatchEvent(
+                          new CustomEvent("changeSkeleton", {
+                            detail : {skeleton_type : "lumbar"}
+                          }));
+                      """,contentWorld: ContentWorld.PAGE);
                     }
                   ),
                 Expanded(
                   child:
                   Center(child:InAppWebView(
                     key: webViewKey,
-                    initialUrlRequest: URLRequest(url:Uri.parse("https://tps-webview-demo.web.app/")),
+                    initialUrlRequest: URLRequest(url:Uri.parse("https://vijay-2021.github.io/combined.html")),
                     initialOptions: options,
                     pullToRefreshController: pullToRefreshController,
                     onWebViewCreated: (controller) {
@@ -163,7 +169,9 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
                       print(consoleMessage.toString());
                       if(consoleMessage.toString().contains("Message: ")){
                         if(consoleMessage.toString().contains("resize video")){
-                          resizeWebViewVideo(context, webViewKey);
+                          //resizeWebViewVideo(context, webViewKey);
+                          //resizeCanvas();
+
                         }
                       }
                     },
@@ -217,6 +225,18 @@ class _PoseInAppWebViewState extends State<PoseInAppWebView> {
 
     webViewController?.callAsyncJavaScript(functionBody: "var windowWidth = "+width+"; var windowHeight = "+height+"; var video = document.getElementsByTagName('video')[0]; video.height = windowHeight; video.width=windowWidth; video.style.textAlign = 'center';");
     webViewController?.callAsyncJavaScript(functionBody: "var windowWidth = "+width+"; var windowHeight = "+height+"; var canvas = document.getElementsByTagName('canvas')[0]; canvas.height = windowHeight; canvas.width=windowWidth; canvas.style.textAlign = 'center';");
+  }
+
+  void resizeCanvas(){
+    webViewController?.callAsyncJavaScript(functionBody:
+    "var canvas = document.getElementsByTagName('canvas')[0];"+
+    "const width = canvas.clientWidth;" +
+    "const height = canvas.clientHeight;"+
+    "if (canvas.width !== width || canvas.height !== height) {"+
+      "canvas.width = width;"+
+      "canvas.height = height;"+
+    "}");
+
   }
 
   Size getWidgetWH(BuildContext context, GlobalKey key){
